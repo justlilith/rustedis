@@ -19,14 +19,14 @@ impl State {
         let value = req.param("value").unwrap_or("blank");
         let mut store = self.store.write().unwrap();
         store.insert(key.to_string(), value.to_string());
-        format!("OK \nKey: {} \nValue: {}", key, value).into()
+        format!("OK \nKey: {} \nValue: {}", key, value)
     }
     pub fn get(&self, req: &mut Request) -> String {
         let key = req.param("key").unwrap_or("blank");
         let missing = String::from("MISSING");
         let store = self.store.try_read().unwrap();
         let value = store.get(&key.to_string()).unwrap_or(&missing);
-        format!("OK \nKey: {} \nValue: {}", key, value).into()
+        format!("OK \nKey: {} \nValue: {}", key, value)
     }
     fn delete(&self, req: &mut Request) -> String {
         let key = req.param("key").unwrap_or("blank");
@@ -34,13 +34,13 @@ impl State {
         let mut store = self.store.write().unwrap();
         store.remove(&key.to_string());
         let value = store.get(&key.to_string()).unwrap_or(&missing);
-        format!("OK \nKey: {} \nValue: {}", key, value).into()
+        format!("OK \nKey: {} \nValue: {}", key, value)
     }
     // fn update() {}
     fn purge(&self) -> String {
         let mut store = self.store.write().unwrap();
         store.clear();
-        format!("OK").into()
+        "OK".to_string()
     }
     // fn contents() {}
 }
@@ -78,11 +78,10 @@ fn main() {
             store5.purge()
         }},
     );
-    let store6 = store.clone();
     app.get(
         "/update/:key/:value",
         middleware! {|req| {
-            store6.add(req)
+            store.add(req)
         }},
     );
     app.listen("127.0.0.1:3000").unwrap();
