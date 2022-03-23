@@ -42,7 +42,14 @@ impl State {
         store.clear();
         "OK".to_string()
     }
-    // fn contents() {}
+    fn contents(&self) -> String {
+        let store = self.store.try_read().unwrap();
+        let mut res = String::new();
+        for (key, val) in store.iter() {
+            res = format!("{}\nKey: {}\nValue: {}", &res, &key, &val)
+        }
+        res
+    }
 }
 
 fn main() {
@@ -76,6 +83,13 @@ fn main() {
         "/purge",
         middleware! {|_| {
             store5.purge()
+        }},
+    );
+    let store6 = store.clone();
+    app.get(
+        "/contents",
+        middleware! {|_| {
+            store6.contents()
         }},
     );
     app.get(
