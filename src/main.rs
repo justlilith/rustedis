@@ -19,16 +19,16 @@ fn hello(req: &mut Request) -> String {
 fn router(store: State) -> nickel::Router {
     let mut router = nickel::Router::new();
     router.get("/", middleware! {|req| hello(req)});
-    let store2 = store.clone();
-    router.get("/get/:key", middleware! {|req| store2.get(req)});
-    let store3 = store.clone();
-    router.get("/add/:key/:value", middleware! {|req| store3.add(req)});
-    let store4 = store.clone();
-    router.get("/delete/:key", middleware! {|req| store4.delete(req)});
-    let store5 = store.clone();
-    router.get("/purge", middleware! {|_| store5.purge()});
-    let store6 = store.clone();
-    router.get("/contents", middleware! {|_| store6.contents()});
+    let store_get = store.clone();
+    let store_add = store.clone();
+    let store_delete = store.clone();
+    let store_purge = store.clone();
+    let store_contents = store.clone();
+    router.get("/get/:key", middleware! {|req| store_get.get(req)});
+    router.get("/add/:key/:value", middleware! {|req| store_add.add(req)});
+    router.get("/delete/:key", middleware! {|req| store_delete.delete(req)});
+    router.get("/purge", middleware! {|_| store_purge.purge()});
+    router.get("/contents", middleware! {|_| store_contents.contents()});
     router.get("/update/:key/:value", middleware! {|req|store.add(req)});
     router
 }
